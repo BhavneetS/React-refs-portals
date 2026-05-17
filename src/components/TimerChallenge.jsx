@@ -17,12 +17,23 @@ export default function TimerChallenge({ title, targetTime }) {
     */
     //    let timer;
 
+    /* 
+        Refs are stored behind the scences in a mutable object that persists for the entire lifetime of the component. 
+        When we assign a value to a ref, it does not trigger a re-render of the component, and the value is preserved across renders. 
+        This makes refs ideal for storing mutable values that need to persist across renders, such as timers or DOM elements.
+    */
+
+    const timerRef = useRef();
 
     const [timerExpired, setTimerExpired] = useState(false);
     const[timerStarted, setTimerStarted] = useState(false);
 
     function handleTimerStart() {
-        timer  = setTimeout(() => {
+        /*  
+            With refs, we need to use the current property, because the ref itself is an object that contains a current property that holds the actual value we want to store. 
+            
+        */
+        timerRef.current  = setTimeout(() => {
             setTimerExpired(true)
         }, targetTime * 1000)
 
@@ -30,7 +41,7 @@ export default function TimerChallenge({ title, targetTime }) {
     }
 
     function handleStop() {
-        clearTimeout(timer);
+        clearTimeout(timerRef.current);
         setTimerStarted(false);
     }
 
