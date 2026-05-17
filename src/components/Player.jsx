@@ -2,7 +2,6 @@ import { useState, useRef } from "react";
 
 export default function Player() {
 
-  console.log("component is re-rendered")
   const playerNameRef = useRef();
   
   const [enteredPlayerName, setEnteredPlayerName] = useState(null);
