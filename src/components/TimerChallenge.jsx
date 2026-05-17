@@ -27,28 +27,39 @@ export default function TimerChallenge({ title, targetTime }) {
     const timerRef = useRef();
     const dialogRef =useRef();
 
-    const [timerExpired, setTimerExpired] = useState(false);
-    const[timerStarted, setTimerStarted] = useState(false);
+    // const[timerStarted, setTimerStarted] = useState(false);
+    const [timeRemaining, setTimeRemaining] = useState(targetTime *1000);
+    const timerIsActive = timeRemaining > 0 && timeRemaining < targetTime*1000;
+
+    if(timeRemaining <=0) {
+        // reset if the time is over and show the dialog.
+        clearInterval(timerRef.current);
+        setTimeRemaining(targetTime * 1000);
+        dialogRef.current.open();
+    }
 
     function handleTimerStart() {
         /*  
             With refs, we need to use the current property, because the ref itself is an object that contains a current property that holds the actual value we want to store. 
             
         */
-        timerRef.current  = setTimeout(() => {
-            setTimerExpired(true)
+
+        
+        // use Interval in place of Timeout to identify the remaining time 
+        timerRef.current  = setInterval(() => {
+            setTimeRemaining(prevTimeRemaining => prevTimeRemaining -10);
             /* 
                 updating the below call from .modal() to .open() to align with the use of Imerative Handle in the Result Modal component.
             */
-            dialogRef.current.open();
-        }, targetTime * 1000)
+            // dialogRef.current.open();
+        }, 10)
 
-        setTimerStarted(true);
+        // setTimerStarted(true);
     }
 
     function handleStop() {
-        clearTimeout(timerRef.current);
-        setTimerStarted(false);
+        dialog.current.open();
+        clearInterval(timerRef.current);
     }
 
     return (
@@ -56,17 +67,16 @@ export default function TimerChallenge({ title, targetTime }) {
         <ResultModal ref={dialogRef} targetTime={targetTime} result="You lost!" />
             <section className="challenge">
                 <h2>{title}</h2>
-                {timerExpired && <p>You lost!</p>}
                 <p className="challenge-time">
                     {targetTime} second{targetTime > 1 ? "s" : ""}
                 </p>
                 <p>
-                    <button onClick={timerStarted ? handleStop : handleTimerStart}>
-                        {timerStarted ? "Stop Challenge" : "Start Challenge"}
+                    <button onClick={timerIsActive ? handleStop : handleTimerStart}>
+                        {timerIsActive ? "Stop Challenge" : "Start Challenge"}
                     </button>
                 </p>
-                <p className={timerStarted ? 'active' : undefined}>
-                {timerStarted ? 'Time is Running....' : 'Timer inactive' } 
+                <p className={timerIsActive ? 'active' : undefined}>
+                {timerIsActive ? 'Time is Running....' : 'Timer inactive' } 
                 </p>
             </section>
         </>
