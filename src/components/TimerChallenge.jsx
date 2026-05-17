@@ -34,8 +34,17 @@ export default function TimerChallenge({ title, targetTime }) {
     if(timeRemaining <=0) {
         // reset if the time is over and show the dialog.
         clearInterval(timerRef.current);
-        setTimeRemaining(targetTime * 1000);
+        //resetting time here causes the remaining time to always be shown as the target time in the ResultModal.
         dialogRef.current.open();
+    }
+    
+    function handleReset() {
+        setTimeRemaining(targetTime * 1000);
+    }
+
+    function handleStop() {
+        dialogRef.current.open();
+        clearInterval(timerRef.current);
     }
 
     function handleTimerStart() {
@@ -57,14 +66,9 @@ export default function TimerChallenge({ title, targetTime }) {
         // setTimerStarted(true);
     }
 
-    function handleStop() {
-        dialog.current.open();
-        clearInterval(timerRef.current);
-    }
-
     return (
         <>
-        <ResultModal ref={dialogRef} targetTime={targetTime} result="You lost!" />
+        <ResultModal ref={dialogRef} targetTime={targetTime} remainingTime={timeRemaining} onReset={handleReset}/>
             <section className="challenge">
                 <h2>{title}</h2>
                 <p className="challenge-time">
@@ -76,7 +80,7 @@ export default function TimerChallenge({ title, targetTime }) {
                     </button>
                 </p>
                 <p className={timerIsActive ? 'active' : undefined}>
-                {timerIsActive ? 'Time is Running....' : 'Timer inactive' } 
+                {timerIsActive ? `Time is Running.... ${timerIsActive}` : 'Timer inactive' } 
                 </p>
             </section>
         </>
