@@ -37,7 +37,10 @@ export default function TimerChallenge({ title, targetTime }) {
         */
         timerRef.current  = setTimeout(() => {
             setTimerExpired(true)
-            dialogRef.current.showModal();
+            /* 
+                updating the below call from .modal() to .open() to align with the use of Imerative Handle in the Result Modal component.
+            */
+            dialogRef.current.open();
         }, targetTime * 1000)
 
         setTimerStarted(true);

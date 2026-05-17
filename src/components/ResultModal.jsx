@@ -1,4 +1,4 @@
-import { forwardRef } from "react"
+import { forwardRef, useImperativeHandle, useRef } from "react"
 
 /*  
     Older versions of React, before React 19, did not allow accepting REF as a prop, and it would throw an error if we tried to do so.
@@ -8,12 +8,30 @@ import { forwardRef } from "react"
 */
 
 const ResultModal = forwardRef(function ResultMod({result, targetTime}, ref ) {
+
+    const dialogRef = useRef();
+
+
+    /* 
+        useImperativeHandle(ref, callback()) helps when Parent wants to control child behavior imperatively, not through props.
+        It encapsulates the child's internal declarative logic and exposes an imperative interface to the parent.
+        It decouples the parent from the child's internal implementation by hiding declarative logic and exposing a simple imperative interface.
+    */
+
+    useImperativeHandle(ref, () => {
+        return {
+            open() {
+                dialogRef.current.showModal();
+            }
+        }
+    })
+
     return (
         /* 
             The dialog element is 'invisible' by default, and it can be made visible by adding the open attribute to it.
             However due to adding the open attribute, the dialog does not render the built in backdrop.
         */
-        <dialog ref={ref} className="result-modal">
+        <dialog ref={dialogRef} className="result-modal">
             <h2>{result}</h2>
             <p>The target time was <strong>{targetTime} seconds.</strong></p>
             <p>You stopped the timer with <strong>X seconds left.</strong></p>
