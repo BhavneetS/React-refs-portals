@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ResultModal from "./ResultModal.jsx";
 
 /* 
     If we delcare the timer outside the component function, it will be shared across all instances of the Timer component. 
@@ -46,20 +47,23 @@ export default function TimerChallenge({ title, targetTime }) {
     }
 
     return (
-        <section className="challenge">
-            <h2>{title}</h2>
-            {timerExpired && <p>You lost!</p>}
-            <p className="challenge-time">
-                {targetTime} second{targetTime > 1 ? "s" : ""}
-            </p>
-            <p>
-                <button onClick={timerStarted ? handleStop : handleTimerStart}>
-                    {timerStarted ? "Stop Challenge" : "Start Challenge"}
-                </button>
-            </p>
-            <p className={timerStarted ? 'active' : undefined}>
-               {timerStarted ? 'Time is Running....' : 'Timer inactive' } 
-            </p>
-        </section>
+        <>
+            {timerExpired && <ResultModal targetTime={targetTime} result="You lost!" />}
+            <section className="challenge">
+                <h2>{title}</h2>
+                {timerExpired && <p>You lost!</p>}
+                <p className="challenge-time">
+                    {targetTime} second{targetTime > 1 ? "s" : ""}
+                </p>
+                <p>
+                    <button onClick={timerStarted ? handleStop : handleTimerStart}>
+                        {timerStarted ? "Stop Challenge" : "Start Challenge"}
+                    </button>
+                </p>
+                <p className={timerStarted ? 'active' : undefined}>
+                {timerStarted ? 'Time is Running....' : 'Timer inactive' } 
+                </p>
+            </section>
+        </>
     )
 }
